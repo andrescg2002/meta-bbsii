@@ -1,0 +1,26 @@
+# Author : Andres Cabezas
+
+optargs=consoleblank=0
+console=ttyO0,115200n8
+
+# kernel
+bootfile=zImage
+bootpart=0:2
+bootdir=/boot
+loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
+
+# device tree
+nohdmi=nohdmi.dtb
+findfdtfile=if test -e mmc ${bootpart} ${bootdir}/nohdmi; then setenv fdtfile ${nohdmi}; fi;
+fdtaddr=0x88000000
+fdtfile=syrus-cape.dtb
+loadaddr=0x82000000
+
+mmcroot=/dev/mmcblk0p2 ro
+mmcrootfstype=ext4 rootwait
+mmcargs=setenv bootargs console=${console} ${optargs} root=${mmcroot} rootfstype=${mmcrootfstype}
+
+loadfdt=run findfdtfile; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
+
+uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
+

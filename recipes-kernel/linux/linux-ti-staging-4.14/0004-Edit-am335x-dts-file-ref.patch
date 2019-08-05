@@ -1,0 +1,19 @@
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+index 1230fd0..0f5b7c8 100644
+--- a/arch/arm/boot/dts/am335x-boneblack.dts
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -10,6 +10,14 @@
+ #include "am33xx.dtsi"
+ #include "am335x-bone-common.dtsi"
+ #include <dt-bindings/display/tda998x.h>
++#include "spi1-spidev.dtsi"
++#include "i2c1.dtsi"
++#include "dcan0.dtsi"
++#include "dcan1.dtsi"
++#include "uart2.dtsi"
++#include "uart4.dtsi"
++#include "uart5.dtsi"
++#include "1wire.dtsi"
+ 
+ / {
+        model = "TI AM335x BeagleBone Black";

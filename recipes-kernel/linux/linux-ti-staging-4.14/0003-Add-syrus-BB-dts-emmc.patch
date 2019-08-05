@@ -1,0 +1,160 @@
+diff --git a/arch/arm/boot/dts/syrusrouter.dtsi b/arch/arm/boot/dts/syrusrouter.dtsi
+new file mode 100644
+index 0000000..ea5c75c
+--- /dev/null
++++ b/arch/arm/boot/dts/syrusrouter.dtsi
+@@ -0,0 +1,152 @@
++/*
++ * Copyright (C) 2018 Digital Communications Technologies, LLC - http://digitalcomtech.com
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++ */
++
++#include <dt-bindings/interrupt-controller/irq.h>
++
++/ {
++	model = "TI AM335x BeagleBone Black";
++	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
++
++	tibt {
++		compatible = "tibt";
++		nshutdown_gpio = <116>; /* Bank3, pin20 (3*32)+20*/
++		dev_name = "/dev/ttyS2";
++		flow_cntrl = <1>;
++		baud_rate = <3000000>;
++	};
++
++};
++
++&am33xx_pinmux {
++	pinctrl-0 = <&clkout2_pin>;
++
++	dcan0_pins: dcan0_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x97c, PIN_INPUT_PULLUP | MUX_MODE2)   /* P9.19, ddcan0_rx */
++			AM33XX_IOPAD(0x978, PIN_OUTPUT_PULLUP | MUX_MODE2)  /* P9.20, ddcan0_tx */
++		>;
++	};
++
++	dcan1_pins: dcan1_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x984, PIN_INPUT_PULLUP | MUX_MODE2)   /* P9.24, ddcan1_rx */
++			AM33XX_IOPAD(0x980, PIN_OUTPUT_PULLUP | MUX_MODE2)  /* P9.26, ddcan1_tx */
++		>;
++	};
++
++   /* Accelerometer */
++	i2c1_pins: i2c1_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x958, SLEWCTRL_SLOW | PIN_INPUT_PULLUP | MUX_MODE2)  /* P9.18, i2c1_sda */
++			AM33XX_IOPAD(0x95c, SLEWCTRL_SLOW | PIN_INPUT_PULLUP | MUX_MODE2)  /* P9.17, i2c1_scl */
++		>;
++	};
++
++	spi1_pins: spi1_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x99c, PIN_OUTPUT_PULLUP | MUX_MODE3)  /* P9.28, spi1_cs0 */
++			AM33XX_IOPAD(0x994, PIN_OUTPUT_PULLUP | MUX_MODE3)  /* P9.29, spi1_d0 */
++			AM33XX_IOPAD(0x998, PIN_INPUT_PULLUP | MUX_MODE3)   /* P9.30, spi1_d1 */
++			AM33XX_IOPAD(0x990, PIN_INPUT_PULLUP | MUX_MODE3)   /* P9.31, spi1_sclk */
++		>;
++	};
++
++   /* Bluetooth */
++	uart2_pins_default: uart2_pins_default {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x950, PIN_INPUT_PULLUP | MUX_MODE1)     /* P9.22, uart2_rxd */
++			AM33XX_IOPAD(0x954, PIN_OUTPUT_PULLDOWN | MUX_MODE1)  /* P9.21, uart2_txd */
++           AM33XX_IOPAD(0x8c0, PIN_INPUT_PULLUP | MUX_MODE6)     /* P8.37, uart2_cts */
++			AM33XX_IOPAD(0x8c4, PIN_OUTPUT_PULLDOWN | MUX_MODE6)  /* P8.38, uart2_rts */
++		>;
++	};
++
++	uart2_pins_sleep: uart2_pins_sleep {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x950, PIN_INPUT_PULLUP | MUX_MODE1)     /* P9.22, uart2_rxd */
++			AM33XX_IOPAD(0x954, PIN_OUTPUT_PULLDOWN | MUX_MODE1)  /* P9.21, uart2_txd */
++           AM33XX_IOPAD(0x8c0, PIN_INPUT_PULLUP | MUX_MODE6)     /* P8.37, uart2_cts */
++			AM33XX_IOPAD(0x8c4, PIN_OUTPUT_PULLDOWN | MUX_MODE6)  /* P8.38, uart2_rts */
++		>;
++	};
++
++	bt_pins_default: bt_pins_default {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x9a8, PIN_OUTPUT_PULLUP   | MUX_MODE7) /* P9.41B, BT_EN */
++		>;
++	};
++
++	bt_pins_sleep: bt_pins_sleep {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x9a8, PIN_OUTPUT_PULLUP   | MUX_MODE7) /* P9.41B, BT_EN */
++		>;
++	};
++
++	uart4_pins: uart4_pins {
++		pinctrl-single,pins = <
++			AM33XX_IOPAD(0x870, PIN_INPUT_PULLUP | MUX_MODE6)     /* P9.11, uart4_rxd */
++			AM33XX_IOPAD(0x874, PIN_OUTPUT_PULLDOWN | MUX_MODE6)  /* P9.13, uart4_txd */
++		>;
++	};
++};
++
++&dcan0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dcan0_pins>;
++};
++
++&dcan1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&dcan1_pins>;
++};
++
++&i2c1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c1_pins>;
++	clock-frequency = <100000>;
++};
++
++&spi1 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&spi1_pins>;
++	ti,pindir-d0-out-d1-in = <1>; /* d0 is MOSI, d1 is MISO */
++
++	spidev1_0: spidev1@0 {
++		compatible = "spidev";
++		reg = <0>;
++		spi-max-frequency = <12000000>;
++		/* spi-cpha; sets CPHA=1, default is CPHA=0 */
++		/* spi-cpol; sets CPOL=1, default is CPOL=0 */
++		/* spi-cs-high; default is spi cs low */
++	};
++};
++
++&uart2 {
++	status = "okay";
++	pinctrl-names = "default","sleep";
++	pinctrl-0 = <&uart2_pins_default &bt_pins_default>;
++	pinctrl-1 = <&uart2_pins_sleep &bt_pins_sleep>;
++};
++
++&uart4 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart4_pins>;
++};
++
++&mmc2 {
++	vmmc-supply = <&vmmcsd_fixed>;
++	pinctrl-names = "default";
++	pinctrl-0 = <&emmc_pins>;
++	bus-width = <8>;
++	status = "okay";
++};
+-- 
+2.7.4

@@ -1,0 +1,15 @@
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+index 3d993ae..bf755b2c 100644
+--- a/arch/arm/boot/dts/am335x-boneblack.dts
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -171,4 +171,8 @@
+ 			sound-dai = <&tda19988>;
+ 		};
+ 	};
++
+ };
++
++/* Overlay the syrus based cape support */
++#include "syrusrouter.dtsi"
+-- 
+1.7.9.5
