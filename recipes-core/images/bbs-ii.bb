@@ -12,4 +12,4 @@ IMAGE_INSTALL += " \
     tar \
     xz \
  "
-export IMAGE_BASENAME = "installer-image"
+export IMAGE_BASENAME = "bbs-ii"
